@@ -7,8 +7,9 @@
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
 // @match https://shikimori.one/animes/*
-// @updateURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/refs/heads/main/js/sap_for_pc.js
-// @downloadURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/refs/heads/main/js/sap_for_pc.js
+// @connect raw.githubusercontent.com
+// @updateURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap_for_pc.js
+// @downloadURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap_for_pc.js
 // @grant none
 // ==/UserScript==
 (function() {
