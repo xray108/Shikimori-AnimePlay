@@ -1,2 +1,3 @@
-# Shikimori-AnimePlay
+<h1 align="center">Shikimori AnimePlay</h1>
+
 Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori
