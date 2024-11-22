@@ -1,12 +1,13 @@
-<h1 align="center">Shikimori AnimePlay</h1>
+# Shikimori AnimePlay
 
 <h3 align="center">Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori</h3>
 
 
-<p>Для установки и работы расширения нужно установить Tempermonkey или аналог. На Android, Tempermonkey работает в браузере Firefox</p>
+Для установки и работы расширения нужно установить Tempermonkey или аналог.
 
-<p>Если кнопка не появилась сразу на странице с аниме, перезагрпузите её</p>
-
-<a href="https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/refs/heads/main/js/sap_for_pc.js" target="_blank">Установить расширение на ПК</a>
-<br>
-<a href="https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/refs/heads/main/js/sap_for_phone.js" target="_blank">Установить расширение на Firefox Android</a> 
+На Android, Tempermonkey работает в браузере Firefox
+> [!WARNING]
+> Если кнопка на странице с аниме не появилась сразу, перезагрузите её!
+## Установка расширения:
+1. **[«Установить расширение на ПК»](https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap_for_pc.js)**
+2. **[«Установить расширение на Firefox Android»](https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap_for_phone.js)**
