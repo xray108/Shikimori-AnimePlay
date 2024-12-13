@@ -2,7 +2,7 @@
 // @name [SAP] Shikimori AnimePlay Universal
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.3.1
+// @version 0.3.2
 // @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
@@ -129,7 +129,6 @@
             videoIframe.setAttribute('allow', 'autoplay *; fullscreen *');
             state.videoModal.appendChild(videoIframe);
 
-            // Добавляем кнопку закрытия для Android
             const closeButton = document.createElement('button');
             closeButton.textContent = '✖';
             closeButton.style.cssText = `
@@ -203,9 +202,17 @@
         return idPart ? idPart.split('-')[0] : null;
     }
 
+    function forceRefresh() {
+        // Принудительная перезагрузка страницы
+        window.location.reload(true);
+    }
+
     const targetElement = document.querySelector(targetSelector);
     if (targetElement) {
         addWatchOnlineButton(targetElement);
+    } else {
+        // Если элемент не найден, делаем перезагрузку страницы
+        forceRefresh();
     }
 
     document.body.addEventListener('click', (e) => {
@@ -226,5 +233,12 @@
         }
     });
     titleObserver.observe(document.querySelector('title'), { subtree: true, characterData: true, childList: true });
+
+    // Проверка наличия кнопки через небольшую задержку после загрузки страницы
+    setTimeout(() => {
+        if (!state.watchOnlineButtonAdded) {
+            forceRefresh();
+        }
+    }, 1000); // Задержка в 1 секунду, чтобы дать странице время загрузиться
 
 })();
