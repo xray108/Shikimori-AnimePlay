@@ -2,7 +2,7 @@
 // @name [SAP] Shikimori AnimePlay Universal
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.3.0
+// @version 0.3.1
 // @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
@@ -128,6 +128,24 @@
             videoIframe.allowFullscreen = true;
             videoIframe.setAttribute('allow', 'autoplay *; fullscreen *');
             state.videoModal.appendChild(videoIframe);
+
+            // Добавляем кнопку закрытия для Android
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '✖';
+            closeButton.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: #ff4500;
+                color: #ffffff;
+                border: none;
+                border-radius: 5px;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 1001;
+            `;
+            closeButton.addEventListener('click', closeVideoModal);
+            state.videoModal.appendChild(closeButton);
 
             document.body.appendChild(state.videoModal);
 
