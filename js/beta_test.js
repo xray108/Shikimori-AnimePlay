@@ -2,7 +2,7 @@
 // @name [SAP] Shikimori AnimePlay Universal
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.2.0
+// @version 0.3.0
 // @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
@@ -16,52 +16,50 @@
 (function() {
     'use strict';
 
-    let currentPageTitle = document.title;
-    let watchOnlineButtonAdded = false;
-    let videoWindow = null;
-    let videoModal = null;
+    const state = {
+        currentPageTitle: document.title,
+        watchOnlineButtonAdded: false,
+        videoWindow: null,
+        videoModal: null,
+    };
+
     const targetSelector = '#animes_show > section > div > div.menu-slide-outer.x199 > div > div > div:nth-child(1) > div.b-db_entry > div.c-image > div.cc.block';
 
     function isMobileDevice() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        return navigator.userAgent.match(/Android/i) !== null;
     }
 
     function toggleVideoPlayer(button) {
         if (isMobileDevice()) {
-            if (!videoModal) {
+            if (!state.videoModal) {
                 openVideoModal();
-                button.textContent = '✖ Закрыть';
             } else {
                 closeVideoModal();
-                button.textContent = '▶ Смотреть онлайн';
             }
         } else {
-            if (!videoWindow || videoWindow.closed) {
+            if (!state.videoWindow || state.videoWindow.closed) {
                 openVideoWindow();
-                button.textContent = '✖ Закрыть';
             } else {
                 closeVideoWindow();
-                button.textContent = '▶ Смотреть онлайн';
             }
         }
     }
 
     function openVideoWindow() {
-        // Код для ПК остается неизменным
         const shikimoriID = getShikimoriID();
         if (shikimoriID) {
             const width = 960;
             const height = Math.round(width * 9 / 16);
-            videoWindow = window.open('', currentPageTitle, `width=${width},height=${height}`);
+            state.videoWindow = window.open('', state.currentPageTitle, `width=${width},height=${height}`);
 
-            if (videoWindow) {
+            if (state.videoWindow) {
                 const videoContent = `
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>${currentPageTitle}</title>
+                        <title>${state.currentPageTitle}</title>
                         <style>
                             body {
                                 margin: 0;
@@ -87,38 +85,38 @@
                     </html>
                 `;
 
-                videoWindow.document.open();
-                videoWindow.document.write(videoContent);
-                videoWindow.document.close();
+                state.videoWindow.document.open();
+                state.videoWindow.document.write(videoContent);
+                state.videoWindow.document.close();
             }
         }
     }
 
     function closeVideoWindow() {
-        if (videoWindow && !videoWindow.closed) {
-            videoWindow.close();
-            videoWindow = null;
+        if (state.videoWindow && !state.videoWindow.closed) {
+            state.videoWindow.close();
+            state.videoWindow = null;
         }
     }
 
     function openVideoModal() {
-        // Код для Android
         const shikimoriID = getShikimoriID();
         if (shikimoriID) {
-            videoModal = document.createElement('div');
-            videoModal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.8);
-                z-index: 1000;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            `;
+            if (!state.videoModal) {
+                state.videoModal = document.createElement('div');
+                state.videoModal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.8);
+                    z-index: 1000;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                `;
+            }
 
             const videoIframe = document.createElement('iframe');
             videoIframe.src = `//kodik.cc/find-player?shikimoriID=${shikimoriID}`;
@@ -129,26 +127,9 @@
             `;
             videoIframe.allowFullscreen = true;
             videoIframe.setAttribute('allow', 'autoplay *; fullscreen *');
-            videoModal.appendChild(videoIframe);
+            state.videoModal.appendChild(videoIframe);
 
-            const closeButton = document.createElement('button');
-            closeButton.textContent = '✖';
-            closeButton.style.cssText = `
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background-color: #ff4500;
-                color: #ffffff;
-                border: none;
-                border-radius: 5px;
-                padding: 10px;
-                cursor: pointer;
-                z-index: 1001;
-            `;
-            closeButton.addEventListener('click', closeVideoModal);
-            videoModal.appendChild(closeButton);
-
-            document.body.appendChild(videoModal);
+            document.body.appendChild(state.videoModal);
 
             if (window.screen.orientation && window.screen.orientation.lock) {
                 window.screen.orientation.lock('landscape').catch(error => {
@@ -159,9 +140,9 @@
     }
 
     function closeVideoModal() {
-        if (videoModal) {
-            document.body.removeChild(videoModal);
-            videoModal = null;
+        if (state.videoModal) {
+            document.body.removeChild(state.videoModal);
+            state.videoModal = null;
 
             if (window.screen.orientation && window.screen.orientation.unlock) {
                 window.screen.orientation.unlock();
@@ -169,9 +150,8 @@
         }
     }
 
-    function addWatchOnlineButton() {
-        const targetElement = document.querySelector(targetSelector);
-        if (targetElement && !watchOnlineButtonAdded) {
+    function addWatchOnlineButton(targetElement) {
+        if (targetElement && !state.watchOnlineButtonAdded) {
             const watchOnlineButton = document.createElement('button');
             watchOnlineButton.textContent = '▶ Смотреть онлайн';
             watchOnlineButton.classList.add('b-link_button');
@@ -194,9 +174,8 @@
                 watchOnlineButton.style.backgroundColor = '#ff4500';
             });
 
-            watchOnlineButton.addEventListener('click', () => toggleVideoPlayer(watchOnlineButton));
             targetElement.parentNode.insertBefore(watchOnlineButton, targetElement.nextSibling);
-            watchOnlineButtonAdded = true;
+            state.watchOnlineButtonAdded = true;
         }
     }
 
@@ -206,17 +185,26 @@
         return idPart ? idPart.split('-')[0] : null;
     }
 
-    addWatchOnlineButton();
+    const targetElement = document.querySelector(targetSelector);
+    if (targetElement) {
+        addWatchOnlineButton(targetElement);
+    }
+
+    document.body.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('b-link_button')) {
+            toggleVideoPlayer(e.target);
+        }
+    });
 
     const titleObserver = new MutationObserver(() => {
-        if (document.title !== currentPageTitle) {
-            currentPageTitle = document.title;
-            if (isMobileDevice() ? videoModal : videoWindow) {
+        if (document.title !== state.currentPageTitle) {
+            state.currentPageTitle = document.title;
+            if (isMobileDevice() ? state.videoModal : state.videoWindow) {
                 if (isMobileDevice()) closeVideoModal();
                 else closeVideoWindow();
             }
-            watchOnlineButtonAdded = false;
-            addWatchOnlineButton();
+            state.watchOnlineButtonAdded = false;
+            if (targetElement) addWatchOnlineButton(targetElement);
         }
     });
     titleObserver.observe(document.querySelector('title'), { subtree: true, characterData: true, childList: true });
