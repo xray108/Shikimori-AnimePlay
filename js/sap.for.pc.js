@@ -2,13 +2,14 @@
 // @name [SAP] Shikimori AnimePlay
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.1.0
+// @version 0.1.1
 // @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
 // @match https://shikimori.one/animes/*
 // @updateURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.for.pc.js
 // @downloadURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.for.pc.js
+// @license GPL3
 // @grant none
 // ==/UserScript==
 (function() {
