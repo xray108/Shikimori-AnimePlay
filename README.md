@@ -7,10 +7,10 @@
 
 На Android, Tempermonkey работает в браузере Firefox
 > [!WARNING]
-> Если кнопка на странице с аниме не появилась сразу, перезагрузите её!
+> Если кнопка на странице с аниме не появилась сразу, перезагрузите страницу ещё раз!
 
 **[«Скрипт на Greasy Fork»](https://greasyfork.org/en/scripts/520609-sap-shikimori-animeplay)**
 
 ## Установка расширения:
-1. **[«Установить расширение на ПК»](https://update.greasyfork.org/scripts/520609/%5BSAP%5D%20Shikimori%20AnimePlay.user.js)**
-2. **[«Установить расширение на Firefox Android»](https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap_for_phone.js)**
+
+**[«Установить расширение на ПК и Андроид»](https://update.greasyfork.org/scripts/520609/%5BSAP%5D%20Shikimori%20AnimePlay.user.js)**
