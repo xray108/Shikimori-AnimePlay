@@ -2,7 +2,7 @@
 // @name [SAP] Shikimori AnimePlay
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.2.0
+// @version 0.2.1
 // @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
@@ -184,10 +184,34 @@
                 transition: background-color 0.3s;
             `;
 
+            const style = document.createElement('style');
+            style.textContent = `
+                .b-link_button {
+                    animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                    0% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                    50% {
+                        transform: scale(1.05);
+                        opacity: 0.9;
+                    }
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
             watchOnlineButton.addEventListener('mouseenter', () => {
+                watchOnlineButton.style.animationPlayState = 'paused';
                 watchOnlineButton.style.backgroundColor = '#ff6347';
             });
             watchOnlineButton.addEventListener('mouseleave', () => {
+                watchOnlineButton.style.animationPlayState = 'running';
                 watchOnlineButton.style.backgroundColor = '#ff4500';
             });
 
