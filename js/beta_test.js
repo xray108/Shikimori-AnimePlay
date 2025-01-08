@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name [SAP] Shikimori AnimePlay Universal
+// @name [SAP] Shikimori AnimePlay
 // @namespace http://tampermonkey.net/
 // @homepage https://github.com/xray108/Shikimori-AnimePlay
-// @version 0.3.2
-// @description Добавляет кнопку "Смотреть онлайн" на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
+// @version 0.3.3
+// @description Добавляет кнопку "Смотреть онлайн" с эффектом пульсации на странице с аниме и при нажатии выводит видеоплеер kodik для просмотра прямо на Shikimori, адаптирован для PC и Android
 // @author XRay108
 // @icon https://www.google.com/s2/favicons?sz=64&domain=shikimori.one
 // @match https://shikimori.one/animes/*
-// @updateURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.universal.js
-// @downloadURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.universal.js
+// @updateURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.js
+// @downloadURL https://raw.githubusercontent.com/xray108/Shikimori-AnimePlay/main/js/sap.js
 // @license GPL3
 // @grant none
 // ==/UserScript==
@@ -184,10 +184,36 @@
                 transition: background-color 0.3s;
             `;
 
+            // Добавляем CSS для анимации пульсации
+            const style = document.createElement('style');
+            style.textContent = `
+                .b-link_button {
+                    animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                    0% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                    50% {
+                        transform: scale(1.05);
+                        opacity: 0.9;
+                    }
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Останавливаем анимацию при наведении мыши
             watchOnlineButton.addEventListener('mouseenter', () => {
+                watchOnlineButton.style.animationPlayState = 'paused';
                 watchOnlineButton.style.backgroundColor = '#ff6347';
             });
             watchOnlineButton.addEventListener('mouseleave', () => {
+                watchOnlineButton.style.animationPlayState = 'running';
                 watchOnlineButton.style.backgroundColor = '#ff4500';
             });
 
@@ -202,17 +228,9 @@
         return idPart ? idPart.split('-')[0] : null;
     }
 
-    function forceRefresh() {
-        // Принудительная перезагрузка страницы
-        window.location.reload(true);
-    }
-
     const targetElement = document.querySelector(targetSelector);
     if (targetElement) {
         addWatchOnlineButton(targetElement);
-    } else {
-        // Если элемент не найден, делаем перезагрузку страницы
-        forceRefresh();
     }
 
     document.body.addEventListener('click', (e) => {
@@ -233,12 +251,5 @@
         }
     });
     titleObserver.observe(document.querySelector('title'), { subtree: true, characterData: true, childList: true });
-
-    // Проверка наличия кнопки через небольшую задержку после загрузки страницы
-    setTimeout(() => {
-        if (!state.watchOnlineButtonAdded) {
-            forceRefresh();
-        }
-    }, 1000); // Задержка в 1 секунду, чтобы дать странице время загрузиться
 
 })();
